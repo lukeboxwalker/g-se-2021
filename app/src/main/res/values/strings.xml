@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Nochmal</string>
+    <string name="hint">hint</string>
+    <string name="nochmal_spielfeld">Nochmal Spielfeld</string>
+    <string name="default_board">gggyyyygbbboyyy ogygyyoorbboogg bgrggggrrryyogg brrgoobbggyyorb roooorbbooorrrr rbbrrrryyorbbbo yybbbbryyygggoo</string>
+    <string name="start">Start</string>
+    <string name="submit">Submit</string>
+    <string name="nochmal">Nochmal!</string>
+    <string name="points">Punkt: 0</string>
+    <string name="activate">Activate Dice</string>
+    <string name="exit_dialog">Zurück zum Startbildschirm?</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+</resources>
