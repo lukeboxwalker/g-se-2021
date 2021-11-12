@@ -83,8 +83,13 @@ public class GameActivity extends AppCompatActivity {
 
     private void clickTile(final TileDisplay tileDisplay) {
         if (!game.getBoard().getTileAt(tileDisplay.getPosition()).isCrossed()) {
-            clickedTiles.add(tileDisplay);
-            tileDisplay.setCrossed(true);
+            if (tileDisplay.isMarked()) {
+                tileDisplay.setMarked(false);
+            } else {
+                clickedTiles.add(tileDisplay);
+                tileDisplay.setMarked(true);
+            }
+
         }
     }
 
@@ -95,9 +100,10 @@ public class GameActivity extends AppCompatActivity {
 
         try {
             game.applyTurn(turn);
+            clickedTiles.forEach(TileDisplay::cross);
         } catch (InvalidTurnException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            clickedTiles.forEach(tileDisplay -> tileDisplay.setCrossed(false));
+            clickedTiles.forEach(tileDisplay -> tileDisplay.setMarked(false));
         }
         clickedTiles.clear();
     }

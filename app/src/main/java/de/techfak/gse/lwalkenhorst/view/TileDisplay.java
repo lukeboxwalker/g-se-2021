@@ -15,26 +15,41 @@ public class TileDisplay extends FrameLayout {
 
     private final TilePosition position;
     private final ImageView crossImage;
+    private final ImageView markImage;
     private final List<TileClickHandler> clickHandlers = new ArrayList<>();
 
     private boolean isCrossed = false;
+    private boolean marked = false;
 
-    public TileDisplay(final Context context, final TilePosition position, final ImageView tile, final ImageView crossImage) {
+    public TileDisplay(final Context context, final TilePosition position, final ImageView tile, final ImageView crossImage, final ImageView markImage) {
         super(context);
-        addView(tile);
+        this.markImage = markImage;
         this.position = position;
         this.crossImage = crossImage;
+        addView(tile);
         setOnClickListener(event -> clickHandlers.forEach(clickHandler -> clickHandler.handle(this)));
     }
 
-    public void setCrossed(final boolean crossed) {
-        if (crossed && !isCrossed) {
-            addView(crossImage);
-            isCrossed = true;
-        } else if (!crossed) {
-            removeView(crossImage);
-            isCrossed = false;
+    public void setMarked(final boolean marked) {
+        if (isCrossed) {
+            return;
         }
+        if (marked) {
+            addView(markImage);
+            this.marked = true;
+        } else {
+            removeView(markImage);
+            this.marked = false;
+        }
+    }
+
+    public void cross() {
+        if (isCrossed) {
+            return;
+        }
+        isCrossed = true;
+        removeView(markImage);
+        addView(crossImage);
     }
 
     public void registerClickHandler(final TileClickHandler clickHandler) {
@@ -43,5 +58,9 @@ public class TileDisplay extends FrameLayout {
 
     public TilePosition getPosition() {
         return position;
+    }
+
+    public boolean isMarked() {
+        return marked;
     }
 }

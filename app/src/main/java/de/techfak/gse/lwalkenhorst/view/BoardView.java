@@ -44,6 +44,7 @@ public class BoardView extends LinearLayout {
 
 
         Bitmap crossed = textureLoader.loadTexture(R.drawable.cross, size);
+        Bitmap crossed_marked = textureLoader.loadTexture(R.drawable.cross_mark, size);
         Bitmap startCol = textureLoader.loadTexture(R.drawable.highlight, size);
         Bitmap header = textureLoader.loadTexture(R.drawable.board_header, size * 15, size);
 
@@ -65,9 +66,11 @@ public class BoardView extends LinearLayout {
                 TilePosition position = new TilePosition(row, col);
                 ImageView crossImage = new ImageView(getContext());
                 crossImage.setImageBitmap(crossed);
-                TileDisplay tileDisplay = new TileDisplay(getContext(), position, tileImage, crossImage);
+                ImageView markImage = new ImageView(getContext());
+                markImage.setImageBitmap(crossed_marked);
+                TileDisplay tileDisplay = new TileDisplay(getContext(), position, tileImage, crossImage, markImage);
                 if (board.getTileAt(row, col).isCrossed()) {
-                    tileDisplay.setCrossed(true);
+                    tileDisplay.cross();
                 }
                 tileDisplay.registerClickHandler(this::handle);
                 if (board.getStartColumn() == col) {
