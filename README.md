@@ -1,6 +1,6 @@
 # GSE-Nochmal-Android
 
-Projekt für Grundlagen-Software-Engineering 2022.
+Projekt für Grundlagen-Software-Engineering 2021.
 
 Realisierung des Brettspiels [Nochmal!](https://de.wikipedia.org/wiki/Noch_mal!) (c) in Java im Rahmen des Moduls GSE.
 
