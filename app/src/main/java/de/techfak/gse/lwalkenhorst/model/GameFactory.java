@@ -1,9 +1,6 @@
 package de.techfak.gse.lwalkenhorst.model;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,36 +21,26 @@ public class GameFactory {
         this.colorMap.put('y', TileColor.YELLOW);
     }
 
-    public Game createGame(final File file) throws InvalidBoardLayoutException, InvalidFieldException, IOException {
-        final BoardImpl board = parse(Files.readAllLines(Paths.get(file.getPath())));
-        return new GameImpl(board, turnValidatorFactory.create(board));
-    }
-
-    public Game createGame(final List<String> lines) throws InvalidBoardLayoutException, InvalidFieldException {
+    public Game createGame(final String[] lines) throws InvalidBoardLayoutException, InvalidFieldException {
         final BoardImpl board = parse(lines);
         return new GameImpl(board, turnValidatorFactory.create(board));
     }
 
-    public Game createGame(final String boardString) throws InvalidBoardLayoutException, InvalidFieldException {
-        final String[] split = boardString.split(" ");
-        if (split.length != bounds.getRows()) {
-            throw new InvalidBoardLayoutException("Wrong board row value!");
-        }
-        final TileImpl[][] tiles = new TileImpl[bounds.getRows()][bounds.getColumns()];
-        for (int row = 0; row < bounds.getRows(); row++) {
-            tiles[row] = createBoardRow(split[row]);
-        }
-        final BoardImpl board = new BoardImpl(tiles, bounds);
-        return new GameImpl(board, turnValidatorFactory.create(board));
+    public Game createGame(final List<String> lines) throws InvalidBoardLayoutException, InvalidFieldException {
+        return createGame(lines.toArray(new String[0]));
     }
 
-    public BoardImpl parse(final List<String> lines) throws InvalidBoardLayoutException, InvalidFieldException {
-        if (lines.size() != bounds.getRows()) {
+    public Game createGame(final String boardString) throws InvalidBoardLayoutException, InvalidFieldException {
+        return createGame(Arrays.asList(boardString.split(" ")));
+    }
+
+    public BoardImpl parse(final String[] lines) throws InvalidBoardLayoutException, InvalidFieldException {
+        if (lines.length != bounds.getRows()) {
             throw new InvalidBoardLayoutException("Wrong board row value!");
         }
         final TileImpl[][] tiles = new TileImpl[bounds.getRows()][bounds.getColumns()];
         for (int row = 0; row < bounds.getRows(); row++) {
-            tiles[row] = createBoardRow(lines.get(row));
+            tiles[row] = createBoardRow(lines[row]);
         }
         return new BoardImpl(tiles, bounds);
     }

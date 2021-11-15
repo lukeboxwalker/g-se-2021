@@ -23,9 +23,7 @@ public class GameImpl implements Game {
     }
 
     @Override
-    @SuppressWarnings("PMD.SystemPrintln")
     public void play() {
-        System.out.println("Welcome to Encore!");
         updateScore();
         enterFirstRound();
     }

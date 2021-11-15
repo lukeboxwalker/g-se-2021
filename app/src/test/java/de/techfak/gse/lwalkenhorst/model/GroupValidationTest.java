@@ -5,6 +5,7 @@ import org.junit.Before;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,6 +37,12 @@ public class GroupValidationTest {
         for (final TilePosition position : turn.getPositionsToCross()) {
             assertTrue(game.getBoard().getTileAt(position).isCrossed());
         }
+    }
+
+    @Test
+    public void testEmptyGroup() throws InvalidTurnException {
+        TurnValidation validation = new AllCrossesGroupedValidation();
+        validation.validate(new ArrayList<>());
     }
 
     @Test

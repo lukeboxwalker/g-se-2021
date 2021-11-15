@@ -6,6 +6,7 @@ import org.junit.Before;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,6 +29,12 @@ public class NeighborValidationTest {
         final GameFactory factory = new GameFactory(7, 15, TurnValidator::new);
         game = factory.createGame(TEST_BOARD);
         game.play();
+    }
+
+    @Test
+    public void testEmptyGroup() throws InvalidTurnException {
+        TurnValidation validation = new CorrectStartCrossValidation(game.getBoard());
+        validation.validate(new ArrayList<>());
     }
 
     @Test

@@ -2,6 +2,7 @@ package de.techfak.gse.lwalkenhorst.model;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,7 +14,7 @@ public class Turn {
     }
 
     public Turn() {
-        this(List.of());
+        this(new ArrayList<>());
     }
 
     public boolean isEmpty() {
