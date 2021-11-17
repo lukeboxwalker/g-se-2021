@@ -1,3 +1,6 @@
+<a href="https://github.com/lukeboxwalker/g-se-2021/actions">![example workflow](https://github.com/lukeboxwalker/g-se-2021/actions/workflows/main.yml/badge.svg)</a>
+<a href="https://app.codecov.io/gh/lukeboxwalker/g-se-2021">![coverage](https://img.shields.io/codecov/c/github/lukeboxwalker/g-se-2021?token=SO2CGQNBD9)</a>
+
 # GSE-Nochmal-Android
 
 Projekt für Grundlagen-Software-Engineering 2021.
