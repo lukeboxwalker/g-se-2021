@@ -22,7 +22,7 @@ jobs:
               uses: android-actions/setup-android@v2
           
             - name: Build SampleApplication
-              run: gradle assembleDebug testDebugUnitTest
+              run: gradle assembleDebug testDebugUnitTest jacocoTestReport
               
             - name: Upload coverage to Codecov
               uses: codecov/codecov-action@v2
