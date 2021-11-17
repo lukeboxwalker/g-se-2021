@@ -2,56 +2,73 @@ package de.techfak.gse.lwalkenhorst.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import de.techfak.gse.lwalkenhorst.R;
-import de.techfak.gse.lwalkenhorst.model.DiceColorFace;
-import de.techfak.gse.lwalkenhorst.model.DiceNumberFace;
-import de.techfak.gse.lwalkenhorst.model.DiceResult;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
-public class DiceView extends LinearLayout {
+import de.techfak.gse.lwalkenhorst.R;
+import de.techfak.gse.lwalkenhorst.model.Dice;
+import de.techfak.gse.lwalkenhorst.model.DiceColorFace;
+import de.techfak.gse.lwalkenhorst.model.DiceNumberFace;
+import de.techfak.gse.lwalkenhorst.model.DiceResult;
+
+public class DiceView extends RelativeLayout {
 
     private final List<ImageView> colorDice = new ArrayList<>();
     private final List<ImageView> numberDice = new ArrayList<>();
 
     private final Map<DiceColorFace, Bitmap> diceColorTextures = new HashMap<>();
     private final Map<DiceNumberFace, Bitmap> diceNumberTextures = new HashMap<>();
+    private final LinearLayout colorCol;
+    private final LinearLayout numberCol;
 
     public DiceView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.setOrientation(HORIZONTAL);
+        final LinearLayout dice = new LinearLayout(context);
+        dice.setOrientation(LinearLayout.HORIZONTAL);
 
-        final LinearLayout colorCol = new LinearLayout(context);
-        colorCol.setOrientation(VERTICAL);
-        addView(colorCol);
-        final LinearLayout numberCol = new LinearLayout(context);
-        numberCol.setOrientation(VERTICAL);
-        addView(numberCol);
+        colorCol = new LinearLayout(context);
+        colorCol.setOrientation(LinearLayout.VERTICAL);
+        dice.addView(colorCol);
+
+        numberCol = new LinearLayout(context);
+        numberCol.setOrientation(LinearLayout.VERTICAL);
+        dice.addView(numberCol);
 
         colorDice.add(new ImageView(context));
         colorDice.add(new ImageView(context));
         colorDice.add(new ImageView(context));
+
+        numberDice.add(new ImageView(context));
+        numberDice.add(new ImageView(context));
+        numberDice.add(new ImageView(context));
 
         colorDice.forEach(child -> {
             colorCol.addView(child);
             child.setPadding(2, 2, 2, 2);
         });
 
-        numberDice.add(new ImageView(context));
-        numberDice.add(new ImageView(context));
-        numberDice.add(new ImageView(context));
-
         numberDice.forEach(child -> {
             numberCol.addView(child);
             child.setPadding(2, 2, 2, 2);
+        });
+
+        addView(dice);
+    }
+
+    public void hide() {
+        Stream.concat(colorDice.stream(), numberDice.stream()).forEach(image -> {
+            image.getDrawable().setColorFilter(0x77000000, PorterDuff.Mode.DARKEN);
+            image.invalidate();
         });
     }
 
@@ -92,5 +109,8 @@ public class DiceView extends LinearLayout {
         diceNumberTextures.put(DiceNumberFace.FOUR, textureLoader.loadTexture(R.drawable.face_four, size));
         diceNumberTextures.put(DiceNumberFace.FIVE, textureLoader.loadTexture(R.drawable.face_five, size));
         diceNumberTextures.put(DiceNumberFace.JOKER, textureLoader.loadTexture(R.drawable.face_number_joker, size));
+
+        updateDice(new Dice().roll());
+        hide();
     }
 }

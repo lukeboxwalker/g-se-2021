@@ -1,15 +1,20 @@
 package de.techfak.gse.lwalkenhorst;
 
-import androidx.activity.OnBackPressedCallback;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import de.techfak.gse.lwalkenhorst.model.Game;
 import de.techfak.gse.lwalkenhorst.model.InvalidTurnException;
@@ -20,11 +25,6 @@ import de.techfak.gse.lwalkenhorst.model.TurnFactory;
 import de.techfak.gse.lwalkenhorst.view.BoardView;
 import de.techfak.gse.lwalkenhorst.view.DiceView;
 import de.techfak.gse.lwalkenhorst.view.TileDisplay;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -50,11 +50,14 @@ public class GameActivity extends AppCompatActivity {
         diceView.init(metrics);
 
         findViewById(R.id.submit).setOnClickListener(v -> submitTurn(game));
+        findViewById(R.id.dice).setOnClickListener(v -> throwDice(v, diceView, game));
 
         game.addListener(PropertyChange.SCORE, event -> updatePoints(view, game));
         game.addListener(PropertyChange.ROUND, event -> {
-            diceView.updateDice(game.getDiceResult());
             updateRound(game);
+            findViewById(R.id.dice).setVisibility(View.VISIBLE);
+            diceView.hide();
+            findViewById(R.id.submit).setEnabled(false);
         });
 
         game.addListener(PropertyChange.FINISHED, event -> finish());
@@ -94,7 +97,6 @@ public class GameActivity extends AppCompatActivity {
                 clickedTiles.add(tileDisplay);
                 tileDisplay.setMarked(true);
             }
-
         }
     }
 
@@ -113,4 +115,10 @@ public class GameActivity extends AppCompatActivity {
         clickedTiles.clear();
     }
 
+    public void throwDice(View view, DiceView diceView, Game game) {
+        view.setVisibility(View.INVISIBLE);
+        diceView.updateDice(game.getDiceResult());
+        findViewById(R.id.submit).setEnabled(true);
+
+    }
 }
