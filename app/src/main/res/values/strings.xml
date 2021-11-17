@@ -11,4 +11,5 @@
     <string name="exit_dialog">Zurück zum Startbildschirm?</string>
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
+    <string name="round">Runde: 1</string>
 </resources>

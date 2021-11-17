@@ -28,11 +28,8 @@ import java.util.stream.Collectors;
 
 public class GameActivity extends AppCompatActivity {
 
-    private Game game;
     private final Set<TileDisplay> clickedTiles = new HashSet<>();
     private final TurnFactory turnFactory = new TurnFactory();
-
-    private BoardView view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,21 +37,26 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         final Intent intent = getIntent();
-
-        game = (Game) intent.getSerializableExtra("game");
+        final Game game = (Game) intent.getSerializableExtra("game");
 
         final DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        view = findViewById(R.id.boardViewLayout);
+        BoardView view = findViewById(R.id.boardViewLayout);
         view.init(game.getBoard(), game.getRuleManger(), metrics);
 
-        view.registerClickHandler(this::clickTile);
+        view.registerClickHandler(tileDisplay -> clickTile(tileDisplay, game));
         final DiceView diceView = findViewById(R.id.diceViewLayout);
         diceView.init(metrics);
 
-        game.addListener(PropertyChange.SCORE, event -> updatePoints());
-        game.addListener(PropertyChange.ROUND, event -> diceView.updateDice(game.getDiceResult()));
+        findViewById(R.id.submit).setOnClickListener(v -> submitTurn(game));
+
+        game.addListener(PropertyChange.SCORE, event -> updatePoints(view, game));
+        game.addListener(PropertyChange.ROUND, event -> {
+            diceView.updateDice(game.getDiceResult());
+            updateRound(game);
+        });
+
         game.addListener(PropertyChange.FINISHED, event -> finish());
 
         game.play();
@@ -72,14 +74,18 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    private void updatePoints() {
+    private void updateRound(final Game game) {
+        ((TextView) findViewById(R.id.round)).setText(String.format("Runde: %s", game.getRound()));
+    }
+
+    private void updatePoints(final BoardView view, final Game game) {
         ((TextView) findViewById(R.id.points)).setText(String.format("Points: %s", game.getPoints().toString()));
         for (final int column : game.getRuleManger().getFullColumns()) {
             view.markColumnAsFull(column);
         }
     }
 
-    private void clickTile(final TileDisplay tileDisplay) {
+    private void clickTile(final TileDisplay tileDisplay, final Game game) {
         if (!game.getBoard().getTileAt(tileDisplay.getPosition()).isCrossed()) {
             if (tileDisplay.isMarked()) {
                 clickedTiles.remove(tileDisplay);
@@ -92,7 +98,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    public void submitTurn(View view) {
+    public void submitTurn(final Game game) {
         final List<TilePosition> positions = clickedTiles.stream()
                 .map(TileDisplay::getPosition).collect(Collectors.toList());
         final Turn turn = turnFactory.createTurn(positions);

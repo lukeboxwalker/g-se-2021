@@ -13,6 +13,8 @@ public interface Game extends Serializable {
 
     Board getBoard();
 
+    int getRound();
+
     void play();
 
     DiceResult getDiceResult();

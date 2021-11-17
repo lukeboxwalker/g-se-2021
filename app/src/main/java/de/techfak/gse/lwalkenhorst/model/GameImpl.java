@@ -75,6 +75,11 @@ public class GameImpl implements Game {
     }
 
     @Override
+    public int getRound() {
+        return round.getIntValue();
+    }
+
+    @Override
     public DiceResult getDiceResult() {
         return round.getDiceResult();
     }
