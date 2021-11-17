@@ -6,46 +6,55 @@
     android:layout_height="match_parent"
     tools:context="de.techfak.gse.lwalkenhorst.GameActivity">
 
-
-    <TextView
-        android:id="@+id/points"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:text="@string/points"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.93"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/submit" />
-
-    <de.techfak.gse.lwalkenhorst.view.BoardView
-        android:id="@+id/boardViewLayout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center">
 
-    <de.techfak.gse.lwalkenhorst.view.DiceView
-        android:id="@+id/diceViewLayout"
-        android:layout_width="134dp"
-        android:layout_height="180dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.25" />
+        <de.techfak.gse.lwalkenhorst.view.BoardView
+            android:id="@+id/boardViewLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"/>
 
-    <Button
-        android:id="@+id/submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="submitTurn"
-        android:text="@string/submit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.953"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/diceViewLayout"
-        app:layout_constraintVertical_bias="0.323" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
+
+            <de.techfak.gse.lwalkenhorst.view.DiceView
+                android:id="@+id/diceViewLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+            <Button
+                android:id="@+id/submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="submitTurn"
+                android:text="@string/submit" />
+
+            <TextView
+                android:id="@+id/points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/points"
+                android:textColor="@color/white"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

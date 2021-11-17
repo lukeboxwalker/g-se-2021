@@ -4,7 +4,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -22,14 +21,15 @@ import de.techfak.gse.lwalkenhorst.view.BoardView;
 import de.techfak.gse.lwalkenhorst.view.DiceView;
 import de.techfak.gse.lwalkenhorst.view.TileDisplay;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GameActivity extends AppCompatActivity {
 
     private Game game;
-    private final List<TileDisplay> clickedTiles = new ArrayList<>();
+    private final Set<TileDisplay> clickedTiles = new HashSet<>();
     private final TurnFactory turnFactory = new TurnFactory();
 
     private BoardView view;
@@ -59,23 +59,21 @@ public class GameActivity extends AppCompatActivity {
 
         game.play();
 
-        final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
                 builder.setMessage(R.string.exit_dialog)
                         .setCancelable(false)
                         .setPositiveButton(R.string.yes, (dialog, id) -> GameActivity.this.finish())
                         .setNegativeButton(R.string.no, (dialog, id) -> dialog.cancel());
                 builder.create().show();
             }
-        };
-        getOnBackPressedDispatcher().addCallback(this, callback);
+        });
     }
 
-    @SuppressLint("SetTextI18n")
     private void updatePoints() {
-        ((TextView) findViewById(R.id.points)).setText("Points: " + game.getPoints().toString());
+        ((TextView) findViewById(R.id.points)).setText(String.format("Points: %s", game.getPoints().toString()));
         for (final int column : game.getRuleManger().getFullColumns()) {
             view.markColumnAsFull(column);
         }
@@ -84,6 +82,7 @@ public class GameActivity extends AppCompatActivity {
     private void clickTile(final TileDisplay tileDisplay) {
         if (!game.getBoard().getTileAt(tileDisplay.getPosition()).isCrossed()) {
             if (tileDisplay.isMarked()) {
+                clickedTiles.remove(tileDisplay);
                 tileDisplay.setMarked(false);
             } else {
                 clickedTiles.add(tileDisplay);
