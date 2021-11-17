@@ -13,42 +13,42 @@ public class GameFactoryTest {
 
     @Test
     public void testCorrectBoard() throws InvalidBoardLayoutException, InvalidFieldException {
-        final String board = "gggyyyygbbboyyy ogygyyoorbboogg bgrggggrrryyogg brrgoobbggyyorb roooorbbooorrrr rbbrrrryyorbbbo yybbbbryyygggoo";
+        final String board = "gggyyyygbbboyyy\nogygyyoorbboogg\nbgrggggrrryyogg\nbrrgoobbggyyorb\nroooorbbooorrrr\nrbbrrrryyorbbbo\nyybbbbryyygggoo";
         final GameFactory gameFactory = new GameFactory(ROWS, COLUMNS, TurnValidator::new);
         assertNotNull(gameFactory.createGame(board));
     }
 
     @Test
     public void testToManyRows() {
-        final String board = "gggyyyygbbboyyy ogygyyoorbboogg bgrggggrrryyogg brrgoobbggyyorb roooorbbooorrrr rbbrrrryyorbbbo yybbbbryyygggoo bgrggggrrryyogg";
+        final String board = "gggyyyygbbboyyy\nogygyyoorbboogg\nbgrggggrrryyogg\nbrrgoobbggyyorb\nroooorbbooorrrr\nrbbrrrryyorbbbo\nyybbbbryyygggoo\nbgrggggrrryyogg";
         final GameFactory gameFactory = new GameFactory(ROWS, COLUMNS, TurnValidator::new);
         assertThrows(InvalidBoardLayoutException.class ,() -> gameFactory.createGame(board));
     }
 
     @Test
     public void testNotEnoughRows() {
-        final String board = "gggyyyygbbboyyy ogygyyoorbboogg bgrggggrrryyogg brrgoobbggyyorb roooorbbooorrrr rbbrrrryyorbbbo";
+        final String board = "gggyyyygbbboyyy\nogygyyoorbboogg\nbgrggggrrryyogg\nbrrgoobbggyyorb\nroooorbbooorrrr\nrbbrrrryyorbbbo";
         final GameFactory gameFactory = new GameFactory(ROWS, COLUMNS, TurnValidator::new);
         assertThrows(InvalidBoardLayoutException.class ,() -> gameFactory.createGame(board));
     }
 
     @Test
     public void testToManyCols() {
-        final String board = "gggyyyygbbboyyy ogygyyoorbbooggo bgrggggrrryyogg brrgoobbggyyorb roooorbbooorrrr rbbrrrryyorbbbo yybbbbryyygggoo";
+        final String board = "gggyyyygbbboyyy\nogygyyoorbbooggo\nbgrggggrrryyogg\nbrrgoobbggyyorb\nroooorbbooorrrr\nrbbrrrryyorbbbo\nyybbbbryyygggoo";
         final GameFactory gameFactory = new GameFactory(ROWS, COLUMNS, TurnValidator::new);
         assertThrows(InvalidBoardLayoutException.class ,() -> gameFactory.createGame(board));
     }
 
     @Test
     public void testNotEnoughCols() {
-        final String board = "gggyyyygbbboyyy ogygyyoorbboogg bgrggggrrryyog brrgoobbggyyorb roooorbbooorrrr rbbrrrryyorbbbo yybbbbryyygggoo";
+        final String board = "gggyyyygbbboyyy\nogygyyoorbboogg\nbgrggggrrryyog\nbrrgoobbggyyorb\nroooorbbooorrrr\nrbbrrrryyorbbbo\nyybbbbryyygggoo";
         final GameFactory gameFactory = new GameFactory(ROWS, COLUMNS, TurnValidator::new);
         assertThrows(InvalidBoardLayoutException.class ,() -> gameFactory.createGame(board));
     }
 
     @Test
     public void testWrongColor() {
-        final String board = "gggyyyygbbboyyy ogygyjoorbboogg bgrggggrrryyogg brrgoobbggyyorb roooorbbooorrrr rbbrrrryyorbbbo yybbbbryyygggoo";
+        final String board = "gggyyyygbbboyyy\nogygyjoorbboogg\nbgrggggrrryyogg\nbrrgoobbggyyorb\nroooorbbooorrrr\nrbbrrrryyorbbbo\nyybbbbryyygggoo";
         final GameFactory gameFactory = new GameFactory(ROWS, COLUMNS, TurnValidator::new);
         assertThrows(InvalidFieldException.class ,() -> gameFactory.createGame(board));
     }
