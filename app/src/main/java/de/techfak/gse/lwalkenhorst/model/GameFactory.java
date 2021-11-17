@@ -31,7 +31,7 @@ public class GameFactory {
     }
 
     public Game createGame(final String boardString) throws InvalidBoardLayoutException, InvalidFieldException {
-        return createGame(Arrays.asList(boardString.split(" ")));
+        return createGame(Arrays.asList(boardString.split("\n")));
     }
 
     public BoardImpl parse(final String[] lines) throws InvalidBoardLayoutException, InvalidFieldException {
