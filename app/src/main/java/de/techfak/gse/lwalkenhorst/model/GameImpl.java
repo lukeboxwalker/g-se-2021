@@ -1,10 +1,14 @@
 package de.techfak.gse.lwalkenhorst.model;
 
-import java.beans.PropertyChangeListener;
+import de.techfak.gse.lwalkenhorst.event.EndGameEvent;
+import de.techfak.gse.lwalkenhorst.event.EventRegister;
+import de.techfak.gse.lwalkenhorst.event.EventSupport;
+import de.techfak.gse.lwalkenhorst.event.RoundEvent;
+import de.techfak.gse.lwalkenhorst.event.ScoreEvent;
 
 public class GameImpl implements Game {
 
-    private final PropertyListenerSupport propertyListenerSupport;
+    private final EventSupport eventSupport;
     private final TurnValidator turnValidator;
     private final RuleManagerImpl ruleManager;
     private final BoardImpl board;
@@ -19,7 +23,7 @@ public class GameImpl implements Game {
         this.gameStrategy = new SinglePlayerStrategy();
         this.turnValidator = turnValidator;
         this.ruleManager = new RuleManagerImpl(board);
-        propertyListenerSupport = new PropertyListenerSupport(this);
+        this.eventSupport = new EventSupport();
     }
 
     @Override
@@ -39,23 +43,27 @@ public class GameImpl implements Game {
     }
 
     private void enterFirstRound() {
-        final Round oldRound = round;
         round = Round.enterFirst(gameStrategy);
-        propertyListenerSupport.firePropertyChange(PropertyChange.ROUND, oldRound, round);
+        final RoundEvent roundEvent = new RoundEvent(round.getIntValue());
+        eventSupport.fireEvent(roundEvent);
     }
 
     private void updateScore() {
-        final Score oldScore = score;
         score = ruleManager.calculatePoints();
-        propertyListenerSupport.firePropertyChange(PropertyChange.SCORE, oldScore, score);
-        propertyListenerSupport.firePropertyChange(PropertyChange.FINISHED, false, ruleManager.isGameFinished());
+        final ScoreEvent scoreEvent = new ScoreEvent(score.getValue(), getRuleManger().getFullColumns());
+        eventSupport.fireEvent(scoreEvent);
+
+        if (ruleManager.isGameFinished()) {
+            final EndGameEvent endGameEvent = new EndGameEvent();
+            eventSupport.fireEvent(endGameEvent);
+        }
     }
 
     private void enterNextRound() {
         if (!ruleManager.isGameFinished()) {
-            final Round oldRound = round;
             round = round.next(gameStrategy);
-            propertyListenerSupport.firePropertyChange(PropertyChange.ROUND, oldRound, round);
+            final RoundEvent roundEvent = new RoundEvent(round.getIntValue());
+            eventSupport.fireEvent(roundEvent);
         }
     }
 
@@ -85,7 +93,7 @@ public class GameImpl implements Game {
     }
 
     @Override
-    public void addListener(final PropertyChange propertyChange, final PropertyChangeListener listener) {
-        propertyListenerSupport.addPropertyChangeListener(propertyChange, listener);
+    public EventRegister event() {
+        return eventSupport;
     }
 }

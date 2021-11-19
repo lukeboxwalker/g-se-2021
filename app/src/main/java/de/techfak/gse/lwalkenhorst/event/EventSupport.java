@@ -1,58 +1,37 @@
 package de.techfak.gse.lwalkenhorst.event;
 
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
-public class EventSupport {
+public class EventSupport implements EventRegister, Serializable {
 
-    private final Map<Class<? extends Event>, Set<Consumer<Event>>> map = new HashMap<>();
+    private final Set<EventHandler<RoundEvent>> roundEventHandlers = new HashSet<>();
+    private final Set<EventHandler<ScoreEvent>> scoreEventHandlers = new HashSet<>();
+    private final Set<EventHandler<EndGameEvent>> endGameEventHandlers = new HashSet<>();
 
-    public void fireEvent(final Event event) {
-        Objects.requireNonNull(map.get(event.getClass()))
-                .forEach(eventConsumer -> eventConsumer.accept(event));
+    public void fireEvent(final RoundEvent event) {
+        roundEventHandlers.forEach(handler -> handler.handle(event));
     }
 
-    private void registerListener(final Class<? extends Event> clazz, Consumer<Event> handler) {
-        if (map.containsKey(clazz)) {
-            Objects.requireNonNull(map.get(clazz)).add(handler);
-        } else {
-            final Set<Consumer<Event>> handlers = new HashSet<>();
-            handlers.add(handler);
-            map.put(clazz, handlers);
-        }
+    public void registerListener(final RoundEventHandler handler) {
+        roundEventHandlers.add(handler);
     }
 
-    @SuppressWarnings("unchecked")
-    public void registerListener(final EventListener listener) {
-        List<Method> methods = Arrays.stream(listener.getClass().getDeclaredMethods())
-                .filter(method -> method.isAnnotationPresent(EventHandler.class))
-                .collect(Collectors.toList());
-        for (Method method : methods) {
-             final Class<? extends Event>[] params = (Class<? extends Event>[]) method.getParameterTypes();
-             if (params.length != 1) {
-                 continue;
-             }
+    public void fireEvent(final ScoreEvent event) {
+        scoreEventHandlers.forEach(handler -> handler.handle(event));
+    }
 
-             final Consumer<Event> handler = event -> {
-                 try {
-                     method.setAccessible(true);
-                     method.invoke(listener, event);
-                 } catch (IllegalAccessException | InvocationTargetException e) {
-                     e.printStackTrace();
-                 }
-             };
-            registerListener(params[0], handler);
+    public void registerListener(final ScoreEventHandler handler) {
+        scoreEventHandlers.add(handler);
+    }
 
-        }
+    public void fireEvent(final EndGameEvent event) {
+        endGameEventHandlers.forEach(handler -> handler.handle(event));
+    }
+
+    public void registerListener(final EndGameEventHandler handler) {
+        endGameEventHandlers.add(handler);
     }
 }
+

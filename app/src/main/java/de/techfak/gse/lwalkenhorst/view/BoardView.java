@@ -7,17 +7,17 @@ import android.util.DisplayMetrics;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import de.techfak.gse.lwalkenhorst.R;
 import de.techfak.gse.lwalkenhorst.model.Board;
 import de.techfak.gse.lwalkenhorst.model.Bounds;
 import de.techfak.gse.lwalkenhorst.model.RuleManager;
 import de.techfak.gse.lwalkenhorst.model.TileColor;
 import de.techfak.gse.lwalkenhorst.model.TilePosition;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class BoardView extends LinearLayout {
 
@@ -130,6 +130,4 @@ public class BoardView extends LinearLayout {
     public void registerClickHandler(final TileClickHandler clickHandler) {
         this.clickHandlers.add(clickHandler);
     }
-
-
 }

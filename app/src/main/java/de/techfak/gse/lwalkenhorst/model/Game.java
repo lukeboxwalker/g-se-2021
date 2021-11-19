@@ -1,7 +1,8 @@
 package de.techfak.gse.lwalkenhorst.model;
 
-import java.beans.PropertyChangeListener;
 import java.io.Serializable;
+
+import de.techfak.gse.lwalkenhorst.event.EventRegister;
 
 public interface Game extends Serializable {
 
@@ -19,5 +20,5 @@ public interface Game extends Serializable {
 
     DiceResult getDiceResult();
 
-    void addListener(final PropertyChange propertyChange, final PropertyChangeListener listener);
+    EventRegister event();
 }

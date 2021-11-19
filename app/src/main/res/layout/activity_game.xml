@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     tools:context="de.techfak.gse.lwalkenhorst.GameActivity">
 
-    <LinearLayout
+    <de.techfak.gse.lwalkenhorst.view.GameView
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
@@ -43,8 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:text="@string/throwDice"
-                    android:onClick="throwDice"/>
+                    android:text="@string/throwDice" />
 
             </de.techfak.gse.lwalkenhorst.view.DiceView>
 
@@ -64,7 +64,7 @@
         </LinearLayout>
 
 
-    </LinearLayout>
+    </de.techfak.gse.lwalkenhorst.view.GameView>
 
 
 
