@@ -13,4 +13,8 @@
     <string name="no">Nein</string>
     <string name="round">Runde: 1</string>
     <string name="throwDice">Wüfeln</string>
+    <string name="host">Spiel hosten</string>
+    <string name="player_name">Spieler Name</string>
+    <string name="lukas">Lukas</string>
+    <string name="server_addresse">Server-Addresse</string>
 </resources>

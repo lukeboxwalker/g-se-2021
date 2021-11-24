@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.techfak.gse.lwalkenhorst">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon"
@@ -10,11 +13,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Nochmal">
         <activity
-            android:name="de.techfak.gse.lwalkenhorst.GameActivity"
-            android:screenOrientation="landscape"
-            android:exported="true" />
+            android:name=".ConnectActivity"
+            android:exported="true"
+            android:screenOrientation="landscape" />
         <activity
-            android:name="de.techfak.gse.lwalkenhorst.MainActivity"
+            android:name=".LobbyActivity"
+            android:exported="true"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".GameActivity"
+            android:exported="true"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="landscape">
             <intent-filter>
