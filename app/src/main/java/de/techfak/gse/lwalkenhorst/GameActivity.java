@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,9 +20,6 @@ public class GameActivity extends AppCompatActivity {
 
         final Intent intent = getIntent();
         final Game game = (Game) intent.getSerializableExtra("game");
-
-        //add alert dialog to back press
-        addBackPressCallback();
 
         final GameView view = findViewById(R.id.root);
 
@@ -46,17 +42,14 @@ public class GameActivity extends AppCompatActivity {
         finish();
     }
 
-    private void addBackPressCallback() {
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-                builder.setMessage(R.string.exit_dialog)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.yes, (dialog, id) -> GameActivity.this.finish())
-                        .setNegativeButton(R.string.no, (dialog, id) -> dialog.cancel())
-                        .create().show();
-            }
-        });
+
+    @Override
+    public void onBackPressed() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+        builder.setMessage(R.string.exit_dialog)
+                .setCancelable(false)
+                .setPositiveButton(R.string.yes, (dialog, id) -> GameActivity.super.onBackPressed())
+                .setNegativeButton(R.string.no, (dialog, id) -> dialog.cancel())
+                .create().show();
     }
 }
