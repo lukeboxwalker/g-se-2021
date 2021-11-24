@@ -4,11 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Collections;
+import java.util.List;
+
+import de.techfak.gse.lwalkenhorst.client.Client;
 import de.techfak.se.multiplayer.game.BaseGame;
 import de.techfak.se.multiplayer.game.BaseGameImpl;
 import de.techfak.se.multiplayer.game.Board;
@@ -18,7 +26,9 @@ import de.techfak.se.multiplayer.server.Server;
 public class ConnectActivity extends AppCompatActivity {
 
     private Server server;
-    public boolean host = false;
+    private boolean host = false;
+    private String playerName;
+    private String serverIp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +43,24 @@ public class ConnectActivity extends AppCompatActivity {
         }
     }
 
-    public void start(View view) {
+    public String getIpAddress() throws SocketException {
+        List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+        for (NetworkInterface networkInterface : interfaces) {
+            List<InetAddress> addresses = Collections.list(networkInterface.getInetAddresses());
+            for (InetAddress address : addresses) {
+                if (!address.isLoopbackAddress()) {
+                    String hostAddress = address.getHostAddress();
+                    assert hostAddress != null;
+                    boolean isIPv4 = hostAddress.indexOf(':') < 0;
+                    if (isIPv4)
+                        return hostAddress;
+                }
+            }
+        }
+        return "127.0.0.1";
+    }
+
+    public void start(View view) throws SocketException {
         final TextInputEditText ip_input = findViewById(R.id.ip_select);
         final Editable ip_text = ip_input.getText();
         final TextInputEditText name_select = findViewById(R.id.name_select);
@@ -43,18 +70,35 @@ public class ConnectActivity extends AppCompatActivity {
             return;
         }
 
-        final String playerName = name_text.toString();
-        final String serverIp;
+        playerName = name_text.toString();
         if (host) {
-            serverIp = "127.0.0.1:8080";
+            serverIp = "http://" + getIpAddress() + ":8080";
         } else if (ip_text == null) {
             return;
         } else {
             serverIp = ip_text.toString();
         }
 
-        
+        Client client = new Client(serverIp, this);
+        client.connect(this::connectSucceed, error -> Toast.makeText(this, "No connection found!", Toast.LENGTH_SHORT).show());
+    }
 
+    public void connectSucceed(final String response) {
+        if ("Encore".equals(response)) {
+            Client client = new Client(serverIp, this);
+            final String name = playerName == null ? "" : playerName;
+            client.register(name, this::registerSucceed, error -> Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show());
+        } else {
+            Toast.makeText(this, "Request didn't match 'Encore'", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void registerSucceed(final String response) {
+        Intent intent = new Intent(this, LobbyActivity.class);
+        intent.putExtra("name", playerName);
+        intent.putExtra("ip", serverIp);
+        intent.putExtra("host", host);
+        startActivity(intent);
     }
 
     private void startServer(final Intent intent) {
@@ -63,7 +107,6 @@ public class ConnectActivity extends AppCompatActivity {
         final SynchronizedGame game = new SynchronizedGame(baseGame);
         server = new Server(game);
         server.start(8080);
-
     }
 
     @Override
@@ -71,6 +114,4 @@ public class ConnectActivity extends AppCompatActivity {
         server.stop();
         super.onDestroy();
     }
-
-
 }

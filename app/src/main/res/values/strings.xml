@@ -17,4 +17,5 @@
     <string name="player_name">Spieler Name</string>
     <string name="lukas">Lukas</string>
     <string name="server_addresse">Server-Addresse</string>
+    <string name="join">Spiel beitreten</string>
 </resources>

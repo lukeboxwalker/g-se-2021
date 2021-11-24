@@ -36,7 +36,7 @@
         android:onClick="start"
         android:text="@string/start"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/diceSwitch"
+        app:layout_constraintEnd_toStartOf="@id/join"
         app:layout_constraintStart_toEndOf="@id/host"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
@@ -66,11 +66,12 @@
         app:layout_constraintTop_toTopOf="parent"
         android:textColor="@color/white"/>
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/diceSwitch"
+    <Button
+        android:id="@+id/join"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/activate"
+        android:text="@string/join"
+        android:onClick="join"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button"
