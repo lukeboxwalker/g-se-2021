@@ -7,4 +7,6 @@ public interface EventRegister {
     void registerListener(final ScoreEventHandler handler);
 
     void registerListener(final EndGameEventHandler handler);
+
+    void clear();
 }

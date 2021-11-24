@@ -16,35 +16,37 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import de.techfak.gse.lwalkenhorst.R;
+import de.techfak.gse.lwalkenhorst.controller.Controller;
 import de.techfak.gse.lwalkenhorst.event.RoundEvent;
 import de.techfak.gse.lwalkenhorst.event.ScoreEvent;
 import de.techfak.gse.lwalkenhorst.model.Game;
 import de.techfak.gse.lwalkenhorst.model.InvalidTurnException;
 import de.techfak.gse.lwalkenhorst.model.TilePosition;
-import de.techfak.gse.lwalkenhorst.model.Turn;
-import de.techfak.gse.lwalkenhorst.model.TurnFactory;
 
 public class GameView extends LinearLayout {
 
     private final Set<TileDisplay> clickedTiles = new HashSet<>();
-    private final TurnFactory turnFactory = new TurnFactory();
+
     private BoardView boardView;
     private DiceView diceView;
+    private Controller controller;
+
 
     public GameView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void init(final Game game, final DisplayMetrics metrics) {
+    public void init(final Controller controller, final Game game, final DisplayMetrics metrics) {
+        this.controller = controller;
         boardView = findViewById(R.id.boardViewLayout);
         boardView.init(game.getBoard(), game.getRuleManger(), metrics);
 
-        boardView.registerClickHandler(tileDisplay -> clickTile(tileDisplay, game));
+        boardView.registerClickHandler(this::clickTile);
         diceView = findViewById(R.id.diceViewLayout);
         diceView.init(metrics);
 
-        findViewById(R.id.submit).setOnClickListener(v -> submitTurn(game));
-        findViewById(R.id.dice).setOnClickListener(v -> throwDice(v, diceView, game));
+        findViewById(R.id.submit).setOnClickListener(v -> submitTurn());
+        findViewById(R.id.dice).setOnClickListener(v -> throwDice(v, diceView));
     }
 
     public void updatePoints(final ScoreEvent event) {
@@ -61,19 +63,17 @@ public class GameView extends LinearLayout {
         findViewById(R.id.submit).setEnabled(false);
     }
 
-    public void throwDice(View view, DiceView diceView, Game game) {
+    public void throwDice(View view, DiceView diceView) {
         view.setVisibility(View.INVISIBLE);
-        diceView.updateDice(game.getDiceResult());
+        diceView.updateDice(controller.getDiceRolled());
         findViewById(R.id.submit).setEnabled(true);
     }
 
-    public void submitTurn(final Game game) {
+    public void submitTurn() {
         final List<TilePosition> positions = clickedTiles.stream()
                 .map(TileDisplay::getPosition).collect(Collectors.toList());
-        final Turn turn = turnFactory.createTurn(positions);
-
         try {
-            game.applyTurn(turn);
+            controller.crossTiles(positions);
             clickedTiles.forEach(TileDisplay::cross);
         } catch (InvalidTurnException e) {
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -82,8 +82,8 @@ public class GameView extends LinearLayout {
         clickedTiles.clear();
     }
 
-    private void clickTile(final TileDisplay tileDisplay, final Game game) {
-        if (!game.getBoard().getTileAt(tileDisplay.getPosition()).isCrossed()) {
+    private void clickTile(final TileDisplay tileDisplay) {
+        if (!controller.checkTileCrossed(tileDisplay.getPosition())) {
             if (tileDisplay.isMarked()) {
                 clickedTiles.remove(tileDisplay);
                 tileDisplay.setMarked(false);

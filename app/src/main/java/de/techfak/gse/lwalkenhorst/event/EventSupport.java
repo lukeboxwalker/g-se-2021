@@ -33,5 +33,12 @@ public class EventSupport implements EventRegister, Serializable {
     public void registerListener(final EndGameEventHandler handler) {
         endGameEventHandlers.add(handler);
     }
+
+    @Override
+    public void clear() {
+        this.roundEventHandlers.clear();
+        this.scoreEventHandlers.clear();
+        this.endGameEventHandlers.clear();
+    }
 }
 
