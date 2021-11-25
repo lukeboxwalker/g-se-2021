@@ -83,6 +83,12 @@ public class ConnectActivity extends AppCompatActivity {
         client.connect(this::connectSucceed, error -> Toast.makeText(this, "No connection found!", Toast.LENGTH_SHORT).show());
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        finish();
+    }
+
     public void connectSucceed(final String response) {
         if ("Encore".equals(response)) {
             Client client = new Client(serverIp, this);
@@ -111,7 +117,9 @@ public class ConnectActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        server.stop();
+        if (server != null) {
+            server.stop();
+        }
         super.onDestroy();
     }
 }

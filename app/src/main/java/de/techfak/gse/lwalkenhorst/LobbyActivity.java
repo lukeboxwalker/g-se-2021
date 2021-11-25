@@ -61,6 +61,12 @@ public class LobbyActivity extends AppCompatActivity {
         timer.schedule(task, 0, 1000L);
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        finish();
+    }
+
     public void showPlayers(final String response) {
         try {
             final PlayerListResponse playerListResponse = JSON_PARSER.readValue(response, PlayerListResponse.class);
