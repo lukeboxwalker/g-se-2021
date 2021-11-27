@@ -4,15 +4,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class GameFactory {
 
     private final Map<Character, TileColor> colorMap = new HashMap<>();
     private final Bounds bounds;
     private final TurnValidatorFactory turnValidatorFactory;
+    private Supplier<GameStrategy> gameStrategySupplier;
 
-    public GameFactory(final int rows, final int columns, final TurnValidatorFactory turnValidatorFactory) {
+    public GameFactory(final int rows, final int columns, final TurnValidatorFactory turnValidatorFactory, final Supplier<GameStrategy> gameStrategySupplier) {
         this.turnValidatorFactory = turnValidatorFactory;
+        this.gameStrategySupplier = gameStrategySupplier;
         this.bounds = new Bounds(rows, columns);
         this.colorMap.put('r', TileColor.RED);
         this.colorMap.put('b', TileColor.BLUE);
@@ -21,9 +24,13 @@ public class GameFactory {
         this.colorMap.put('y', TileColor.YELLOW);
     }
 
+    public GameFactory(final int rows, final int columns, final TurnValidatorFactory turnValidatorFactory) {
+        this(rows, columns, turnValidatorFactory, SinglePlayerStrategy::new);
+    }
+
     public Game createGame(final String[] lines) throws InvalidBoardLayoutException, InvalidFieldException {
         final BoardImpl board = parse(lines);
-        return new GameImpl(board, turnValidatorFactory.create(board));
+        return new GameImpl(board, turnValidatorFactory.create(board), gameStrategySupplier.get());
     }
 
     public Game createGame(final List<String> lines) throws InvalidBoardLayoutException, InvalidFieldException {

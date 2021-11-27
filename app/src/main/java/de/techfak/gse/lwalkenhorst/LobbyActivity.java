@@ -19,13 +19,16 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.function.Supplier;
 
 import de.techfak.gse.lwalkenhorst.client.Client;
 import de.techfak.gse.lwalkenhorst.model.DiceTurnValidator;
 import de.techfak.gse.lwalkenhorst.model.Game;
 import de.techfak.gse.lwalkenhorst.model.GameFactory;
+import de.techfak.gse.lwalkenhorst.model.GameStrategy;
 import de.techfak.gse.lwalkenhorst.model.InvalidBoardLayoutException;
 import de.techfak.gse.lwalkenhorst.model.InvalidFieldException;
+import de.techfak.gse.lwalkenhorst.model.MultiPlayerStrategy;
 import de.techfak.se.multiplayer.game.GameStatus;
 import de.techfak.se.multiplayer.server.response_body.BoardResponse;
 import de.techfak.se.multiplayer.server.response_body.PlayerListResponse;
@@ -108,7 +111,8 @@ public class LobbyActivity extends AppCompatActivity {
         try {
             final BoardResponse boardResponse = JSON_PARSER.readValue(response, BoardResponse.class);
 
-            final GameFactory factory = new GameFactory(ROWS, COLUMNS, DiceTurnValidator::new);
+            final Supplier<GameStrategy> gameStrategySupplier = () -> new MultiPlayerStrategy(new Client(ip, this));
+            final GameFactory factory = new GameFactory(ROWS, COLUMNS, DiceTurnValidator::new, gameStrategySupplier);
             final Game game = factory.createGame(boardResponse.getBoard());
             final Intent intent = new Intent(LobbyActivity.this, GameActivity.class);
             intent.putExtra("game", game);

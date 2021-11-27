@@ -17,10 +17,10 @@ public class GameImpl implements Game {
     private Score score;
     private Round round;
 
-    public GameImpl(final BoardImpl board, final TurnValidator turnValidator) {
+    public GameImpl(final BoardImpl board, final TurnValidator turnValidator, final GameStrategy gameStrategy) {
         this.board = board;
         this.score = new Score();
-        this.gameStrategy = new SinglePlayerStrategy();
+        this.gameStrategy = gameStrategy;
         this.turnValidator = turnValidator;
         this.ruleManager = new RuleManagerImpl(board);
         this.eventSupport = new EventSupport();
