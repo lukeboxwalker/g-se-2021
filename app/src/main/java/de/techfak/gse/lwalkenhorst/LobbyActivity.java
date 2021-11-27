@@ -57,7 +57,7 @@ public class LobbyActivity extends AppCompatActivity {
 
         try {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            Bitmap bitmap = barcodeEncoder.encodeBitmap("data=" + ip, BarcodeFormat.QR_CODE, 400, 400);
+            Bitmap bitmap = barcodeEncoder.encodeBitmap(ip, BarcodeFormat.QR_CODE, 400, 400);
             ImageView imageViewQrCode = findViewById(R.id.qrCode);
             imageViewQrCode.setImageBitmap(bitmap);
         } catch (WriterException e) {
