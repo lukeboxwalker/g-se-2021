@@ -1,14 +1,19 @@
 package de.techfak.gse.lwalkenhorst;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -48,6 +53,17 @@ public class LobbyActivity extends AppCompatActivity {
         ip = intent.getStringExtra("ip");
         ((TextView) findViewById(R.id.name)).setText(String.format("Name: %s", name));
         ((TextView) findViewById(R.id.ip)).setText(String.format("IP: %s", ip));
+
+
+        try {
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.encodeBitmap("data=" + ip, BarcodeFormat.QR_CODE, 400, 400);
+            ImageView imageViewQrCode = findViewById(R.id.qrCode);
+            imageViewQrCode.setImageBitmap(bitmap);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
 
         client = new Client(ip, this);
 

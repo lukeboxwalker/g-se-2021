@@ -18,4 +18,6 @@
     <string name="lukas">Lukas</string>
     <string name="server_addresse">Server-Addresse</string>
     <string name="join">Spiel beitreten</string>
+    <string name="scan_code">Scan Code</string>
+    <string name="qr_code">QR-CODE</string>
 </resources>

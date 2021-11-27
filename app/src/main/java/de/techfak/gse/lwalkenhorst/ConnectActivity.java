@@ -4,11 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -29,6 +33,14 @@ public class ConnectActivity extends AppCompatActivity {
     private boolean host = false;
     private String playerName;
     private String serverIp;
+    private boolean exit = false;
+
+    private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(),
+            result -> {
+                if(result.getContents() != null) {
+                    ((EditText) findViewById(R.id.ip_select)).setText(result.getContents());
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +50,7 @@ public class ConnectActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         if (intent.hasExtra("board")) {
             findViewById(R.id.addressInput).setVisibility(View.INVISIBLE);
+            findViewById(R.id.scan).setVisibility(View.INVISIBLE);
             this.host = true;
             startServer(intent);
         }
@@ -86,7 +99,9 @@ public class ConnectActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        finish();
+        if (this.exit) {
+            finish();
+        }
     }
 
     public void connectSucceed(final String response) {
@@ -104,6 +119,8 @@ public class ConnectActivity extends AppCompatActivity {
         intent.putExtra("name", playerName);
         intent.putExtra("ip", serverIp);
         intent.putExtra("host", host);
+
+        this.exit = true;
         startActivity(intent);
     }
 
@@ -121,5 +138,11 @@ public class ConnectActivity extends AppCompatActivity {
             server.stop();
         }
         super.onDestroy();
+    }
+
+    public void scan(View view) {
+        ScanOptions options = new ScanOptions();
+        options.setBeepEnabled(false);
+        barcodeLauncher.launch(options);
     }
 }
