@@ -29,6 +29,7 @@ import de.techfak.gse.lwalkenhorst.model.GameStrategy;
 import de.techfak.gse.lwalkenhorst.model.InvalidBoardLayoutException;
 import de.techfak.gse.lwalkenhorst.model.InvalidFieldException;
 import de.techfak.gse.lwalkenhorst.model.MultiPlayerStrategy;
+import de.techfak.gse.lwalkenhorst.model.SinglePlayerStrategy;
 import de.techfak.se.multiplayer.game.GameStatus;
 import de.techfak.se.multiplayer.server.response_body.BoardResponse;
 import de.techfak.se.multiplayer.server.response_body.PlayerListResponse;
@@ -112,7 +113,7 @@ public class LobbyActivity extends AppCompatActivity {
             final BoardResponse boardResponse = JSON_PARSER.readValue(response, BoardResponse.class);
 
             final Supplier<GameStrategy> gameStrategySupplier = () -> new MultiPlayerStrategy(new Client(ip, this));
-            final GameFactory factory = new GameFactory(ROWS, COLUMNS, DiceTurnValidator::new, gameStrategySupplier);
+            final GameFactory factory = new GameFactory(ROWS, COLUMNS, DiceTurnValidator::new, SinglePlayerStrategy::new);
             final Game game = factory.createGame(boardResponse.getBoard());
             final Intent intent = new Intent(LobbyActivity.this, GameActivity.class);
             intent.putExtra("game", game);

@@ -19,6 +19,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import de.techfak.gse.lwalkenhorst.client.Client;
 import de.techfak.se.multiplayer.game.BaseGame;
@@ -29,16 +30,41 @@ import de.techfak.se.multiplayer.server.Server;
 
 public class ConnectActivity extends AppCompatActivity {
 
+    private static final Random random = new Random();
+
     private Server server;
     private boolean host = false;
     private String playerName;
     private String serverIp;
     private boolean exit = false;
+    private final String[] names = new String[]{
+            "Freddy",
+            "Sahra",
+            "Preston",
+            "Konnor",
+            "Alanis",
+            "Jon",
+            "Eva",
+            "Peyton",
+            "Jenna",
+            "Laibah",
+            "Theia",
+            "Rahma",
+            "Dante",
+            "Hibba",
+            "Krisha",
+            "Sofia",
+            "Cristina",
+            "Otis",
+            "Hayley",
+            "Vikram",
+    };
 
     private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(),
             result -> {
-                if(result.getContents() != null) {
+                if (result.getContents() != null) {
                     ((EditText) findViewById(R.id.ip_select)).setText(result.getContents());
+                    start();
                 }
             });
 
@@ -46,6 +72,8 @@ public class ConnectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
+        findViewById(R.id.button).setOnClickListener(v -> start());
+        ((EditText) findViewById(R.id.name_select)).setText(names[random.nextInt(names.length)]);
 
         final Intent intent = getIntent();
         if (intent.hasExtra("board")) {
@@ -56,24 +84,28 @@ public class ConnectActivity extends AppCompatActivity {
         }
     }
 
-    public String getIpAddress() throws SocketException {
-        List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
-        for (NetworkInterface networkInterface : interfaces) {
-            List<InetAddress> addresses = Collections.list(networkInterface.getInetAddresses());
-            for (InetAddress address : addresses) {
-                if (!address.isLoopbackAddress()) {
-                    String hostAddress = address.getHostAddress();
-                    assert hostAddress != null;
-                    boolean isIPv4 = hostAddress.indexOf(':') < 0;
-                    if (isIPv4)
-                        return hostAddress;
+    public String getIpAddress() {
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface networkInterface : interfaces) {
+                List<InetAddress> addresses = Collections.list(networkInterface.getInetAddresses());
+                for (InetAddress address : addresses) {
+                    if (!address.isLoopbackAddress()) {
+                        String hostAddress = address.getHostAddress();
+                        assert hostAddress != null;
+                        boolean isIPv4 = hostAddress.indexOf(':') < 0;
+                        if (isIPv4)
+                            return hostAddress;
+                    }
                 }
             }
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
         }
         return "127.0.0.1";
     }
 
-    public void start(View view) throws SocketException {
+    public void start() {
         final TextInputEditText ip_input = findViewById(R.id.ip_select);
         final Editable ip_text = ip_input.getText();
         final TextInputEditText name_select = findViewById(R.id.name_select);
