@@ -1,10 +1,11 @@
 package de.techfak.gse.lwalkenhorst.model;
 
 import java.io.Serializable;
+import java.util.function.Consumer;
 
 public interface GameStrategy extends Serializable {
 
-    DiceResult start();
+    void firstRound(final Consumer<Round> onFinish);
 
-    DiceResult rollDice();
+    void nextRound(Round round, Score score, Consumer<Round> onFinish);
 }

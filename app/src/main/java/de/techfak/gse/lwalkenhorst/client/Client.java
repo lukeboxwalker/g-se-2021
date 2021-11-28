@@ -10,6 +10,7 @@ import com.android.volley.toolbox.Volley;
 import java.net.URI;
 
 import de.techfak.se.multiplayer.game.GameStatus;
+import de.techfak.se.multiplayer.server.request_body.EndRoundBody;
 import de.techfak.se.multiplayer.server.request_body.RegisterBody;
 import de.techfak.se.multiplayer.server.request_body.StatusBody;
 
@@ -85,6 +86,39 @@ public class Client {
         StringRequest request = new RequestBuilder()
                 .method(Request.Method.GET)
                 .url(URL.append("/api/game/board"))
+                .onSuccess(successCallback)
+                .addParam("name", name)
+                .build();
+
+        queue.add(request);
+    }
+
+    public void getDiceResult(final String name, SuccessCallback successCallback) {
+        StringRequest request = new RequestBuilder()
+                .method(Request.Method.GET)
+                .url(URL.append("/api/game/dice"))
+                .onSuccess(successCallback)
+                .addParam("name", name)
+                .build();
+
+        queue.add(request);
+    }
+
+    public void endRound(final String name, final int points) {
+        StringRequest request = new RequestBuilder()
+                .method(Request.Method.POST)
+                .url(URL.append("/api/game/round"))
+                .contentType("application/json")
+                .body(new EndRoundBody(name, points))
+                .build();
+
+        queue.add(request);
+    }
+
+    public void getRound(final String name, final SuccessCallback successCallback) {
+        StringRequest request = new RequestBuilder()
+                .method(Request.Method.GET)
+                .url(URL.append("/api/game/round"))
                 .onSuccess(successCallback)
                 .addParam("name", name)
                 .build();

@@ -12,13 +12,6 @@ public class Round {
         this.diceResult = diceResult;
     }
 
-    public static Round enterFirst(final GameStrategy gameStrategy) {
-        return new Round(1, gameStrategy.start());
-    }
-
-    public Round next(final GameStrategy gameStrategy) {
-        return new Round(current + 1, gameStrategy.rollDice());
-    }
 
     public int getIntValue() {
         return current;

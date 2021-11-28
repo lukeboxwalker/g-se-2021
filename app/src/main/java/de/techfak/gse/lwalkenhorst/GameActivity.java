@@ -1,6 +1,5 @@
 package de.techfak.gse.lwalkenhorst;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 
@@ -21,8 +20,7 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        final Intent intent = getIntent();
-        this.game = (Game) intent.getSerializableExtra("game"); // Model
+        this.game = ((EncoreApp) getApplication()).getGame(); // Model
         final GameView view = findViewById(R.id.root); // View
         final Controller controller = new Controller(game); // Controller
 

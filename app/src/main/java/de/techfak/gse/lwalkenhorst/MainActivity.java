@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
             final Game game = factory.createGame(text.toString());
             final Intent intent = new Intent(MainActivity.this, GameActivity.class);
-            intent.putExtra("game", game);
+            ((EncoreApp) getApplication()).setGame(game);
 
             startActivity(intent);
         } catch (InvalidBoardLayoutException | InvalidFieldException e) {

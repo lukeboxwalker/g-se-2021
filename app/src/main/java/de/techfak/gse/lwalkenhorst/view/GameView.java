@@ -73,9 +73,11 @@ public class GameView extends LinearLayout {
         final List<TilePosition> positions = clickedTiles.stream()
                 .map(TileDisplay::getPosition).collect(Collectors.toList());
         try {
+            findViewById(R.id.submit).setEnabled(false);
             controller.crossTiles(positions);
             clickedTiles.forEach(TileDisplay::cross);
         } catch (InvalidTurnException e) {
+            findViewById(R.id.submit).setEnabled(true);
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             clickedTiles.forEach(tileDisplay -> tileDisplay.setMarked(false));
         }

@@ -1,5 +1,7 @@
 package de.techfak.gse.lwalkenhorst.model;
 
+import de.techfak.se.multiplayer.game.Color;
+
 public enum DiceColorFace {
     GREEN() {
         @Override
@@ -39,4 +41,15 @@ public enum DiceColorFace {
     };
 
     public abstract boolean matches(final TileColor color);
+
+    public static DiceColorFace convert(final Color color) {
+        switch (color) {
+            case GREEN: return DiceColorFace.GREEN;
+            case YELLOW: return DiceColorFace.YELLOW;
+            case RED: return DiceColorFace.RED;
+            case BLUE: return DiceColorFace.BLUE;
+            case ORANGE: return DiceColorFace.ORANGE;
+            default: return DiceColorFace.JOKER;
+        }
+    }
 }

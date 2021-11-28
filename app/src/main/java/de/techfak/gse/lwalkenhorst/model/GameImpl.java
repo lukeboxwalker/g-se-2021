@@ -29,7 +29,7 @@ public class GameImpl implements Game {
     @Override
     public void play() {
         updateScore();
-        enterFirstRound();
+        gameStrategy.firstRound(this::enterFirstRound);
     }
 
     @Override
@@ -39,11 +39,11 @@ public class GameImpl implements Game {
             board.cross(turn.getPositionsToCross());
             updateScore();
         }
-        enterNextRound();
+        gameStrategy.nextRound(this.round, this.score, this::enterNextRound);
     }
 
-    private void enterFirstRound() {
-        round = Round.enterFirst(gameStrategy);
+    private void enterFirstRound(final Round round) {
+        this.round = round;
         final RoundEvent roundEvent = new RoundEvent(round.getIntValue());
         eventSupport.fireEvent(roundEvent);
     }
@@ -59,9 +59,9 @@ public class GameImpl implements Game {
         }
     }
 
-    private void enterNextRound() {
+    private void enterNextRound(final Round round) {
         if (!ruleManager.isGameFinished()) {
-            round = round.next(gameStrategy);
+            this.round = round;
             final RoundEvent roundEvent = new RoundEvent(round.getIntValue());
             eventSupport.fireEvent(roundEvent);
         }
