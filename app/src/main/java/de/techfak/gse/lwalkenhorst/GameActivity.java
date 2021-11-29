@@ -13,14 +13,12 @@ import de.techfak.gse.lwalkenhorst.view.GameView;
 
 public class GameActivity extends AppCompatActivity {
 
-    private Game game;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        this.game = ((EncoreApp) getApplication()).getGame(); // Model
+        final Game game = ((EncoreApp) getApplication()).getGame(); // Model
         final GameView view = findViewById(R.id.root); // View
         final Controller controller = new Controller(game); // Controller
 
@@ -28,15 +26,15 @@ public class GameActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         //init game view with given display size
-        view.init(controller, this.game, metrics);
+        view.init(controller, game, metrics);
 
         //register event Listeners
-        this.game.event().registerListener(view::updatePoints);
-        this.game.event().registerListener(view::updateRound);
-        this.game.event().registerListener(this::endGame);
+        game.event().registerListener(view::updatePoints);
+        game.event().registerListener(view::updateRound);
+        game.event().registerListener(this::endGame);
 
         //start game
-        this.game.play();
+        game.play();
     }
 
     private void endGame(EndGameEvent event) {
@@ -45,7 +43,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        game.event().clear();
+        ((EncoreApp) getApplication()).getGame().event().clear();
         super.onDestroy();
     }
 
